@@ -1,3 +1,4 @@
+import React from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 
 import { useRoom } from '../hooks/useRoom';
@@ -17,32 +18,34 @@ type RoomParams = {
   id: string;
 }
 
-export function AdminRoom() {
-  const { id: roomId} = useParams<RoomParams>();
+export const AdminRoom: React.FC = () => {
+  const { id: roomId } = useParams<RoomParams>();
   const history = useHistory();
   const { questions, title } = useRoom(roomId);
 
-  async function handleEndRoom() {
+  async function handleEndRoom(): Promise<void> {
     await database.ref(`/rooms/${roomId}`).update({
       endedAt: new Date(),
-    })
+    });
 
     history.push('/');
   }
 
-  async function handleDeleteQuestion(questionId: string) {
-    if(window.confirm('Você tem certeza que deseja excluir esta pergunta?')) {
+  async function handleDeleteQuestion(questionId: string): Promise<void> {
+    // eslint-disable-next-line no-alert
+    if (window.confirm('Você tem certeza que deseja excluir esta pergunta?')) {
       await database.ref(`/rooms/${roomId}/questions/${questionId}`).remove();
     }
   }
 
-  async function handleCheckQuestionAsAnswered(questionId: string) {
+  // eslint-disable-next-line max-len
+  async function handleCheckQuestionAsAnswered(questionId: string): Promise<void> {
     await database.ref(`/rooms/${roomId}/questions/${questionId}`).update({
       isAnswered: true,
     });
   }
 
-  async function handleHighlightQuestion(questionId: string) {
+  async function handleHighlightQuestion(questionId: string): Promise<void> {
     await database.ref(`/rooms/${roomId}/questions/${questionId}`).update({
       isHighlighted: true,
     });
@@ -66,12 +69,22 @@ export function AdminRoom() {
       </header>
       <main>
         <div className="room-title">
-          <h1>Sala {title}</h1>
-          { questions.length > 0 && <span>{questions.length} {questions.length > 1 ? 'perguntas' : 'pergunta' }</span>}
+          <h1>
+            Sala
+            {' '}
+            {title}
+          </h1>
+          { questions.length > 0 && (
+          <span>
+            {questions.length}
+            {' '}
+            {questions.length > 1 ? 'perguntas' : 'pergunta' }
+          </span>
+          )}
         </div>
 
         <div className="question-list">
-          {questions.map(question => (
+          {questions.map((question) => (
             <Question
               key={question.id}
               content={question.content}
@@ -109,4 +122,4 @@ export function AdminRoom() {
       </main>
     </div>
   );
-}
+};

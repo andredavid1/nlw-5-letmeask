@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import { database } from '../services/firebase';
@@ -7,14 +7,14 @@ import { Button } from '../components/Button';
 
 import illustrationImg from '../assets/images/illustration.svg';
 import logoImg from '../assets/images/logo.svg';
-import '../styles/auth.scss'
+import '../styles/auth.scss';
 
-export function NewRoom() {
+export const NewRoom: React.FC = () => {
   const { user } = useAuth();
   const history = useHistory();
   const [newRoom, setNewRoom] = useState('');
 
-  async function handleCreateRoom(event: FormEvent) {
+  async function handleCreateRoom(event: FormEvent): Promise<void> {
     event.preventDefault();
 
     if (newRoom.trim() === '') {
@@ -33,7 +33,10 @@ export function NewRoom() {
   return (
     <div id="page-auth">
       <aside>
-        <img src={illustrationImg} alt="Ilustração simbolizando perguntas e respostas" />
+        <img
+          src={illustrationImg}
+          alt="Ilustração simbolizando perguntas e respostas"
+        />
         <strong>Crie salas de Q&amp;A ao-vivo</strong>
         <p>Tire as dúvidas da sua audiência em tempo real</p>
       </aside>
@@ -45,7 +48,7 @@ export function NewRoom() {
             <input
               type="text"
               placeholder="Nome da sala"
-              onChange={event => setNewRoom(event.target.value)}
+              onChange={(event) => setNewRoom(event.target.value)}
               value={newRoom}
             />
             <Button type="submit">
@@ -53,10 +56,12 @@ export function NewRoom() {
             </Button>
           </form>
           <p>
-            Quer entrar em uma sala existente? <Link to="/">clique aqui</Link>
+            Quer entrar em uma sala existente?
+            {' '}
+            <Link to="/">clique aqui</Link>
           </p>
         </div>
       </main>
     </div>
-  )
-}
+  );
+};

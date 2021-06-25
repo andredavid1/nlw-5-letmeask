@@ -1,4 +1,5 @@
-import { ReactNode } from "react"
+/* eslint-disable react/require-default-props */
+import React from 'react';
 import cx from 'classnames';
 
 import '../styles/question.scss';
@@ -9,7 +10,7 @@ type QuestionProps = {
     name: string;
     avatar: string;
   };
-  children?: ReactNode;
+  children?: React.ReactNode;
   isAnswered?: boolean;
   isHighlighted?: boolean;
 }
@@ -20,7 +21,7 @@ export function Question({
   isAnswered = false,
   isHighlighted = false,
   children,
-}: QuestionProps) {
+}: QuestionProps): React.ReactNode {
   return (
     <div
       className={cx(
@@ -38,5 +39,5 @@ export function Question({
         <div>{children}</div>
       </footer>
     </div>
-  )
+  );
 }

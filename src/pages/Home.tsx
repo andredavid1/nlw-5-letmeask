@@ -1,4 +1,5 @@
-import { FormEvent, useState } from 'react';
+/* eslint-disable no-alert */
+import React, { FormEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { database } from '../services/firebase';
@@ -7,24 +8,24 @@ import { useAuth } from '../hooks/useAuth';
 import { Button } from '../components/Button';
 import illustrationImg from '../assets/images/illustration.svg';
 import logoImg from '../assets/images/logo.svg';
-import googleIconImg from '../assets/images/google-icon.svg'
+import googleIconImg from '../assets/images/google-icon.svg';
 
-import '../styles/auth.scss'
+import '../styles/auth.scss';
 
-export function Home() {
+export const Home: React.FC = () => {
   const history = useHistory();
   const { user, signInWithGoogle } = useAuth();
   const [roomCode, setRoomCode] = useState('');
 
-  async function handleCreateRoom() {
-    if(!user) {
+  async function handleCreateRoom(): Promise<void> {
+    if (!user) {
       await signInWithGoogle();
     }
 
     history.push('/rooms/new');
   }
 
-  async function handleJoinRoom(event: FormEvent) {
+  async function handleJoinRoom(event: FormEvent): Promise<void> {
     event.preventDefault();
 
     if (roomCode.trim() === '') {
@@ -33,13 +34,13 @@ export function Home() {
 
     const roomRef = await database.ref(`rooms/${roomCode}`).get();
 
-    if(!roomRef.exists()) {
-      alert('Room does not exists.')
+    if (!roomRef.exists()) {
+      alert('Room does not exists.');
       return;
     }
 
-    if(roomRef.val().endedAt) {
-      alert('Room already closed.')
+    if (roomRef.val().endedAt) {
+      alert('Room already closed.');
       return;
     }
 
@@ -49,14 +50,21 @@ export function Home() {
   return (
     <div id="page-auth">
       <aside>
-        <img src={illustrationImg} alt="Ilustração simbolizando perguntas e respostas" />
+        <img
+          src={illustrationImg}
+          alt="Ilustração simbolizando perguntas e respostas"
+        />
         <strong>Crie salas de Q&amp;A ao-vivo</strong>
         <p>Tire as dúvidas da sua audiência em tempo real</p>
       </aside>
       <main>
         <div className="main-content">
           <img src={logoImg} alt="letmeask" />
-          <button className="create-room" onClick={handleCreateRoom}>
+          <button
+            type="button"
+            className="create-room"
+            onClick={handleCreateRoom}
+          >
             <img src={googleIconImg} alt="Logo do Google" />
             Crie sua sala com o Google
           </button>
@@ -65,7 +73,7 @@ export function Home() {
             <input
               type="text"
               placeholder="Digite o código da sala"
-              onChange={event => setRoomCode(event.target.value)}
+              onChange={(event) => setRoomCode(event.target.value)}
               value={roomCode}
             />
             <Button type="submit">
@@ -75,5 +83,5 @@ export function Home() {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
